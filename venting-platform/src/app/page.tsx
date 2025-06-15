@@ -17,16 +17,16 @@ export default function LandingPage() {
       <section className="text-center py-20 bg-gradient-to-r from-calm-blue-light via-calm-purple-light to-neutral-light dark:from-calm-blue-dark dark:via-calm-purple-dark dark:to-neutral-darker">
         <div className="container mx-auto px-6">
           <h1 className="text-5xl md:text-6xl font-bold text-neutral-darker dark:text-neutral-light mb-6">
-            Share Your Thoughts. <span className="text-calm-purple dark:text-calm-purple-light">Anonymously.</span>
+            Share Your Thoughts. <span className="text-calm-purple dark:text-calm-purple-light">Join the Conversation.</span>
           </h1>
           <p className="text-xl text-neutral-dark dark:text-neutral-DEFAULT mb-10 max-w-2xl mx-auto">
-            A safe and supportive community for university students to express themselves freely without judgment.
+            A supportive community for university students to express themselves. Sign in to share and connect.
           </p>
           <Link
-            href="/vents/new" // Changed from /feed to /vents/new as per previous step
+            href="/vents/new"
             className="bg-calm-purple hover:bg-calm-purple-dark text-white font-bold py-4 px-10 rounded-lg text-lg transition duration-300 ease-in-out transform hover:scale-105"
           >
-            Start Venting Anonymously
+            Share Your First Vent
           </Link>
         </div>
       </section>
@@ -38,7 +38,7 @@ export default function LandingPage() {
             Why VentSpace?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard icon="🤫" title="Total Anonymity" description="Share without revealing your identity. Your privacy is paramount." />
+            <FeatureCard icon="🤫" title="Controlled Sharing" description="Your profile name is associated with your vents. Share thoughtfully." />
             <FeatureCard icon="💖" title="Supportive Community" description="Connect with peers who understand. Give and receive support." />
             <FeatureCard icon="🏷️" title="Emotion Tagging" description="Categorize your vents by emotion and topic for better connection." />
             <FeatureCard icon="🔒" title="Safe & Secure" description="We prioritize your safety with robust moderation and data protection." />
@@ -81,7 +81,7 @@ export default function LandingPage() {
             Your Safety is Our Priority
           </h2>
           <p className="text-lg text-neutral-dark dark:text-neutral-DEFAULT mb-4">
-            We are committed to creating a safe, respectful, and anonymous environment. Our platform includes features like content reporting and moderation (details coming soon) to ensure a positive experience for everyone.
+            We are committed to creating a safe and respectful environment. While vents are tied to user profiles (not anonymous to the system), we encourage thoughtful sharing. Our platform includes features like content reporting to ensure a positive experience.
           </p>
           <p className="text-lg text-neutral-dark dark:text-neutral-DEFAULT">
             Your data is handled with care. We only store what's necessary for the platform to function and are transparent about our data practices. For more details, please see our (future) Privacy Policy.

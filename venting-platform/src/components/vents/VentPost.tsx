@@ -14,20 +14,23 @@ import { Menu, Transition as MenuTransition } from '@headlessui/react'; // For d
 import { Fragment } from 'react'; // For MenuTransition
 
 
-// Simple avatar generator based on seed (e.g., user ID)
-const generateAvatar = (seed: string, isAnonymous: boolean) => {
-  if (!isAnonymous && seed.startsWith('http')) { // Assuming authenticated user image might be a URL
-    return <img src={seed} alt="User Avatar" className="w-10 h-10 rounded-full" />;
+// Updated avatar generator
+const generateAvatar = (name?: string | null, imageUrl?: string | null) => {
+  // If an image URL is provided (e.g., from Google profile), use it.
+  if (imageUrl) {
+    return <img src={imageUrl} alt={name || 'User Avatar'} className="w-10 h-10 rounded-full object-cover" />;
   }
-  // Simple text-based avatar for anonymous users or if no image URL
-  const initial = (seed[0] || 'A').toUpperCase();
-  const colors = [
+
+  // Fallback to initial-based avatar if no image URL
+  // Use the first character of the name, or 'U' for 'User' if name is also missing.
+  const initial = (name?.[0] || 'U').toUpperCase();
+  const colors = [ // Consistent set of fallback colors
     'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500',
     'bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 'bg-teal-500'
   ];
-  // Consistent color based on seed length or first char code
-  const colorIndex = (seed.charCodeAt(0) || 0) % colors.length;
-  const bgColor = colors[colorIndex];
+  // Generate a somewhat consistent color based on the initial or name length
+  const colorIndex = (initial.charCodeAt(0) - 'A'.charCodeAt(0) + (name?.length || 0)) % colors.length;
+  const bgColor = colors[colorIndex >= 0 ? colorIndex : 0]; // Ensure positive index
 
   return (
     <div className={`w-10 h-10 rounded-full ${bgColor} flex items-center justify-center text-white font-bold text-xl`}>
@@ -128,15 +131,21 @@ export default function VentPost({ vent: initialVent, isInitiallySaved = false, 
 
   const totalReactions = Object.values(vent.reactions || {}).reduce((sum, count) => sum + count, 0);
 
+  // Since vent.isAnonymous is now always false, and vent.pseudonym is the user's name,
+  // and vent.avatarSeed is the user's image URL (or null).
+  const displayName = vent.pseudonym || 'User'; // Fallback if name is somehow null
+  const avatarElement = generateAvatar(displayName, vent.avatarSeed); // Pass name for initials if image is null
+
   return (
     <>
       <article className="bg-white dark:bg-dark-card shadow-lg rounded-lg p-6 mb-6 break-inside-avoid">
         <div className="flex items-start mb-4">
-          {generateAvatar(vent.avatarSeed || vent.userId, vent.isAnonymous)}
+          {avatarElement} {/* Use the updated avatar element */}
           <div className="ml-3 flex-grow">
             <h3 className="font-semibold text-lg text-neutral-darker dark:text-neutral-light">
-              {vent.pseudonym || 'User'}
-              {vent.isAnonymous && <span className="text-sm text-neutral-dark ml-1">(Anonymous)</span>}
+              {displayName}
+              {/* The (Anonymous) span is no longer needed as isAnonymous is always false */}
+              {/* {vent.isAnonymous && <span className="text-sm text-neutral-dark ml-1">(Anonymous)</span>} */}
             </h3>
             <p className="text-xs text-neutral-dark dark:text-neutral-DEFAULT">
               {new Date(vent.createdAt).toLocaleString()}

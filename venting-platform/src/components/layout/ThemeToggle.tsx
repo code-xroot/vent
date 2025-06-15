@@ -5,35 +5,28 @@ import { useState, useEffect } from 'react';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
 export default function ThemeToggle() {
-  // Initialize with a default theme; will be updated on mount.
-  // This helps avoid trying to access localStorage on the server or too early on the client.
-  const [theme, setTheme] = useState('light');
-  const [isMounted, setIsMounted] = useState(false);
+  // Default to 'light' on initial render (server & client pre-mount).
+  // This will be updated after mount from localStorage.
+  const [theme, setTheme] = useState<string>('light');
+  const [isMounted, setIsMounted] = useState<boolean>(false);
 
-  // Effect 1: Runs once on the client after initial render to set the theme
-  // from localStorage (or system preference) and mark the component as mounted.
+  // Effect 1: Runs once on client mount.
+  // Reads theme from localStorage and updates state. Then marks as mounted.
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
-    // Optional: Check system preference if no theme is stored
-    // const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Optional: Fallback to system preference if no theme is stored in localStorage
+    // const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // const initialClientTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
+    const initialClientTheme = storedTheme || 'light'; // Default to 'light' if nothing is stored
 
-    if (storedTheme) {
-      setTheme(storedTheme);
-    }
-    // else if (prefersDark) { // Uncomment to respect system preference if no stored theme
-    //   setTheme('dark');
-    // }
-    // else { // If neither stored nor system preference (or system is light)
-    //   setTheme('light'); // Explicitly ensure it's light if that's the fallback
-    // }
-    setIsMounted(true);
-  }, []); // Empty dependency array ensures this runs only once on mount
+    setTheme(initialClientTheme); // Update theme state based on localStorage
+    setIsMounted(true); // Mark as mounted AFTER attempting to set the theme
+  }, []); // Empty dependency array ensures this runs only once on client mount
 
-  // Effect 2: Runs whenever the theme state changes (and after mount)
-  // to apply the 'dark' class to the HTML element and update localStorage.
+  // Effect 2: Apply theme to DOM and update localStorage.
+  // Runs whenever 'theme' state changes OR when 'isMounted' becomes true.
   useEffect(() => {
-    // Only apply changes if the component is mounted and theme has been initialized.
-    if (isMounted) {
+    if (isMounted) { // Only proceed if component is mounted
       if (theme === 'dark') {
         document.documentElement.classList.add('dark');
       } else {
@@ -41,10 +34,10 @@ export default function ThemeToggle() {
       }
       localStorage.setItem('theme', theme);
     }
-  }, [theme, isMounted]); // Re-run when theme or isMounted changes
+  }, [theme, isMounted]); // Dependencies: theme and isMounted
 
-  // While not mounted, return a placeholder to prevent hydration mismatch,
-  // as the server-rendered output won't know the theme from localStorage.
+  // Render a placeholder or null until the component is mounted on the client.
+  // This helps prevent hydration mismatches.
   if (!isMounted) {
     return <div className="w-6 h-6" />;
   }
