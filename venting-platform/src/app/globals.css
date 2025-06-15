@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* You can add global styles here if needed */
+/* body { */
+  /* Example of applying a default background if not handled by components */
+  /* background-color: #F5F5F5; */ /* neutral-light */
+/* } */
