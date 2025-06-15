@@ -122,10 +122,26 @@ export async function GET(request: Request) {
 // POST: Create a new vent
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
-  const userIdInfo = session?.user?.id ?
-                     { userId: session.user.id, isAnonymous: false, name: session.user.name, image: session.user.image } :
-                     cookies().get(ANONYMOUS_USER_COOKIE)?.value ?
-                     { userId: cookies().get(ANONYMOUS_USER_COOKIE)!.value, isAnonymous: true } : null;
+  let userIdInfo: { userId: string; isAnonymous: boolean; name?: string | null; image?: string | null } | null = null;
+
+  const user = (session as any)?.user;
+  if (user && user.id && typeof user.id === 'string') {
+    userIdInfo = {
+      userId: user.id,
+      isAnonymous: false,
+      name: user.name ?? undefined,
+      image: user.image ?? undefined,
+    };
+  } else {
+    const cookieStore = await cookies();
+    const anonCookie = cookieStore.get(ANONYMOUS_USER_COOKIE);
+    if (anonCookie && anonCookie.value) {
+      userIdInfo = {
+        userId: anonCookie.value,
+        isAnonymous: true,
+      };
+    }
+  }
 
   if (!userIdInfo) {
     return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });

@@ -16,12 +16,13 @@ export default function SignInPage() {
   const [error, setError] = useState<string | null>(null); // State for login error messages
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
 
-  useEffect(() => {
-    const callbackUrl = searchParams.get('callbackUrl') || '/';
-    if (status === 'authenticated') {
-      router.push(callbackUrl);
-    }
-  }, [status, router, searchParams]);
+  // Remove auto-redirect for authenticated users so user can always choose sign-in method
+  // useEffect(() => {
+  //   const callbackUrl = searchParams.get('callbackUrl') || '/';
+  //   if (status === 'authenticated') {
+  //     router.push(callbackUrl);
+  //   }
+  // }, [status, router, searchParams]);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -74,14 +75,14 @@ export default function SignInPage() {
     );
   }
 
-  if (status === 'authenticated') {
-    // This should ideally not be seen as useEffect redirects.
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-lg text-neutral-dark dark:text-neutral-DEFAULT">You are already signed in. Redirecting...</p>
-      </div>
-    );
-  }
+  // Remove the authenticated redirect message, always show the sign-in form
+  // if (status === 'authenticated') {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-screen">
+  //       <p className="text-lg text-neutral-dark dark:text-neutral-DEFAULT">You are already signed in. Redirecting...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-8 bg-neutral-light dark:bg-dark-bg">

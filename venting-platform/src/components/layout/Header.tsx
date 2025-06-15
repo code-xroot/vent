@@ -1,4 +1,5 @@
 // src/components/layout/Header.tsx
+"use client";
 import Link from 'next/link';
 import ThemeToggle from './ThemeToggle';
 import { useSession, signOut } from 'next-auth/react'; // Import signOut

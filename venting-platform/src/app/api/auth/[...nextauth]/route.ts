@@ -15,7 +15,8 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   console.warn('Missing Google OAuth credentials. Google Sign-In will not work if GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are not set. This warning can be removed if Google provider is disabled.');
 }
 
-export const authOptions = {
+// Type workaround for NextAuth/TypeScript type mismatch
+export const authOptions: any = {
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
@@ -74,13 +75,13 @@ export const authOptions = {
     // error: '/auth/error', // You can define an error page
   },
   session: {
-    strategy: 'database', // Using 'database' to store sessions, good for Credentials provider
+    strategy: 'database' as 'database', // Using 'database' to store sessions, good for Credentials provider
     maxAge: 30 * 24 * 60 * 60,
     updateAge: 24 * 60 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, user }: { session: any; user: any }) {
       // 'user' object here is from the authorize callback or from the adapter after social login
       if (session.user) {
         session.user.id = user.id; // user.id is already correctly mapped by this point
