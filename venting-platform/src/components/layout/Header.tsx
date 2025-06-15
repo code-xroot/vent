@@ -1,3 +1,5 @@
+'use client';
+
 // src/components/layout/Header.tsx
 import Link from 'next/link';
 import ThemeToggle from './ThemeToggle';
